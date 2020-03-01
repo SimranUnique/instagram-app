@@ -7,6 +7,11 @@ import {each} from 'lodash';
 import {addComment, incrementLike} from "../actions/post";
 
 class PostContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.commentInput = React.createRef();
+    }
+
     handleLikeOnClick = () => {
         this.props.incrementLike({
             postId: this.props.postId
@@ -14,12 +19,17 @@ class PostContainer extends Component {
     };
 
     handleAddComment = event => {
-        if(event.keyCode === 13) {
+        if(event.keyCode === 13 && event.target.value.length > 0) {
             this.props.addComment({
                 postId: this.props.postId,
                 comment: {user: this.props.user.name, comment: event.target.value}
             });
+            this.commentInput.current.value = "";
         }
+    };
+
+    handleCommentAutoFocus = () => {
+        this.commentInput.current.focus();
     };
 
     getCommentsView = () => {
@@ -27,7 +37,7 @@ class PostContainer extends Component {
 
         each(this.props.posts[this.props.postId].comments, (eachComment, index) => {
             commentsView.push(
-                <div className="comment_container" key={`${this.props.postId}_comment_${index}`}>
+                <div className="comment_container" key={`${this.props.postId}_comment_${index}`} onClick={this.handleCommentAutoFocus}>
                     <span className="comment_user">{eachComment.user}</span><span>{eachComment.comment}</span>
                 </div>
             );
@@ -71,7 +81,7 @@ class PostContainer extends Component {
                         <div className="likes_count">{`${post.likes} Likes`}</div>
                     }
                     {this.getCommentsView()}
-                    <input className="add_comment" placeholder="Add Comment" onKeyUp={this.handleAddComment}></input>
+                    <input ref={this.commentInput} className="add_comment" placeholder="Add Comment" onKeyUp={this.handleAddComment}></input>
                 </div>
             </section>
         );
