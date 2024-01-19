@@ -1,10 +1,15 @@
-import React, {Component} from 'react';
+import React from 'react';
+import BaseContainer from './BaseContainer';
 import UserHeader from '../components/UserHeader';
 import UserBody from '../components/UserBody';
 import {connect} from "react-redux";
 import '../styles/styles.css';
 
-class UserContainer extends Component {
+class UserContainer extends BaseContainer {
+    componentDidMount() {
+        this.doneLoading();
+    }
+    
     render() {
         return (
             <section className="main_section">

@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
+import BaseContainer from './BaseContainer';
 import UserHeader from '../components/UserHeader';
 import Post from '../components/Post';
 import '../styles/styles.css';
@@ -6,16 +7,21 @@ import {connect} from "react-redux";
 import {each} from 'lodash';
 import {addComment, incrementLike} from "../actions/post";
 
-class PostContainer extends Component {
+class PostContainer extends BaseContainer {
     constructor(props) {
         super(props);
         this.commentInput = React.createRef();
+    }
+
+    componentDidMount() {
+        this.doneLoading();
     }
 
     handleLikeOnClick = () => {
         this.props.incrementLike({
             postId: this.props.postId
         });
+        this.logInfo(`Liked post ${this.props.postId}`);
     };
 
     handleAddComment = event => {
@@ -25,7 +31,9 @@ class PostContainer extends Component {
                 comment: {user: this.props.user.name, comment: event.target.value}
             });
             this.commentInput.current.value = "";
+            this.logInfogInfo(`Added comment to post ${this.props.postId}`);
         }
+        this.logInfogInfo(`Empty comment added for post: ${this.props.postId}`);
     };
 
     handleCommentAutoFocus = () => {
